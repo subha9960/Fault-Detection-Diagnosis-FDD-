@@ -1,0 +1,48 @@
+feature_name,description,unit,variable_type,process_location,sensor_actuator_type,expected_range,physical_relationship,role
+row_id,"Sequential row index, chronological",-,metadata,-,-,0..N,-,metadata
+timestamp,"Sample timestamp (2-min interval, continuous, no shuffling)",datetime,metadata,-,-,-,-,metadata
+episode_id,Operational episode identifier,-,metadata,-,-,-,-,metadata
+operating_mode,Plant operating mode (low_load/normal_production/high_load),-,metadata,-,-,-,-,metadata
+operating_load_percent,Feed throughput relative to nominal capacity,%,metadata,-,-,70-125,load,metadata
+feed_flow,Feed flow rate to column (measured),kmol/h,process input,feed line,flow transmitter,45-150,material balance driver,input
+feed_temperature,Feed temperature (measured),degC,process input,feed line,RTD,20-70,energy balance / VLE,input
+feed_pressure,Feed line pressure,bar,process input,feed line,pressure transmitter,17-19,feed conditioning,input
+feed_propane_fraction,Feed light-component (propane) mole fraction,mol frac,process input,feed line,online analyzer,0.35-0.85,VLE driver,input
+feed_isobutane_fraction,Feed heavy-component (isobutane) mole fraction,mol frac,process input,feed line,online analyzer,0.15-0.65,1-feed_propane_fraction,input
+feed_valve_position,Feed control valve opening,%,actuator,feed line,control valve,0-100,manipulates feed_flow,input
+feed_liquid_fraction,Estimated liquid fraction of feed (thermal condition),frac,derived,feed line,model estimate,0-1,affects internal liquid/vapor traffic,input
+column_pressure,Column top (overhead) pressure (measured),bar,process output,column top,pressure transmitter,16-20,coupled to temperature/VLE,output
+column_pressure_drop,Column differential pressure top-to-bottom (measured),bar,process output,column,dP transmitter,0.15-1.8,hydraulic loading / flooding-weeping indicator,output
+top_temperature,Overhead/top tray temperature,degC,process output,top tray,RTD,40-75,pressure + composition coupled,output
+bottom_temperature,Reboiler/bottom sump temperature,degC,process output,bottom,RTD,65-92,pressure + composition coupled,output
+tray_N_temperature,"Temperature at tray N (N=2,5,10,15,20,25,30)",degC,process output,tray N,RTD,varies,"spatial profile, fault-localized",output
+tray_N_pressure,Pressure at tray N,bar,process output,tray N,pressure transmitter,varies,hydraulic profile,output
+reflux_drum_level,Reflux drum liquid level,%,process output,reflux drum,level transmitter,5-95,inventory / level control,output
+bottom_sump_level,Bottom sump liquid level,%,process output,sump,level transmitter,5-95,inventory / level control,output
+vapor_flow,Internal vapor traffic (energy-balance derived),kmol/h,process output,column internals,soft sensor,80-260,tied to reboiler duty,output
+reflux_flow,Reflux liquid flow to top tray (measured),kmol/h,process output,reflux line,flow transmitter,85-200,separation driver,output
+reflux_ratio,Reflux ratio (controller state),-,process output,top composition loop,soft sensor,1.4-4.5,separation driver,output
+distillate_flow,Overhead product flow (measured),kmol/h,process output,distillate line,flow transmitter,3-90,material balance,output
+bottoms_flow,Bottom product flow (measured),kmol/h,process output,bottoms line,flow transmitter,3-140,material balance,output
+reboiler_duty,Reboiler heat duty,kW,process output,reboiler,energy balance / DCS calc,150-1350,vapor generation driver,output
+condenser_duty,Condenser heat duty,kW,process output,condenser,energy balance / DCS calc,150-1350,pressure control driver,output
+steam_flow,Reboiler heating steam flow,t/h,process output,reboiler steam line,flow transmitter,0.5-2.5,energy input,output
+steam_valve_position,Reboiler steam control valve opening,%,actuator,reboiler steam line,control valve,0-100,manipulates reboiler_duty; F9/F17 target,input
+cooling_water_flow,Condenser cooling water flow,m3/h,process output,condenser CW line,flow transmitter,20-360,condenser performance; F12 target,output
+cooling_water_temperature,Condenser cooling water supply temperature,degC,process output,condenser CW line,RTD,24-32,condenser performance,output
+reflux_valve_position,Reflux control valve opening,%,actuator,reflux line,control valve,0-100,manipulates reflux_flow; F8 target,input
+distillate_light_component_fraction,Distillate (top product) light-component purity,mol frac,process output,distillate line,online analyzer,0.83-1.0,top separation quality,output
+distillate_heavy_component_fraction,Distillate heavy-component fraction,mol frac,process output,distillate line,online analyzer,0-0.17,1-light fraction,output
+bottoms_light_component_fraction,Bottoms (bottom product) light-component impurity,mol frac,process output,bottoms line,online analyzer,0.0-0.45,bottom separation quality,output
+bottoms_heavy_component_fraction,Bottoms heavy-component fraction,mol frac,process output,bottoms line,online analyzer,0.55-1.0,1-light fraction,output
+condenser_htc_mult,Condenser heat-transfer coefficient multiplier (soft/derived),-,process output,condenser,model estimate,0.35-1.0,fouling indicator (F10/F17),output - DO NOT use for detection (near label proxy)
+reboiler_htc_mult,Reboiler heat-transfer coefficient multiplier (soft/derived),-,process output,reboiler,model estimate,0.35-1.0,fouling indicator (F11/F17),output - DO NOT use for detection (near label proxy)
+feed_flow_controller_output,Feed flow controller output / valve target,%,controller,feed loop,DCS,0-100,closed-loop response,input
+pressure_controller_output,Pressure controller output (condenser duty multiplier),-,controller,pressure loop,DCS,0.3-1.5,closed-loop response,input
+reflux_controller_output,Top composition controller output (reflux ratio),-,controller,composition loop,DCS,1.4-4.5,closed-loop response,input
+distillate_level_controller_output,Reflux-drum level controller output,kmol/h,controller,level loop,DCS,20-90,closed-loop response,input
+bottom_level_controller_output,Bottom-sump level controller output,kmol/h,controller,level loop,DCS,20-90,closed-loop response,input
+top_composition_controller_output,Top composition controller output (mirrors reflux ratio),-,controller,composition loop,DCS,1.4-4.5,closed-loop response,input
+bottom_composition_controller_output,Bottom composition controller output (reboiler duty multiplier),-,controller,composition loop,DCS,0.6-1.5,closed-loop response,input
+missing_data_flag,1 if any sensor value missing this row,flag,metadata,-,-,0/1,-,metadata - DO NOT use as predictor
+sensor_quality_flag,1 if an active sensor fault (bias/drift) is present this row,flag,metadata,-,-,0/1,-,metadata - DO NOT use as predictor (label proxy)
